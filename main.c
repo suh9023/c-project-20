@@ -114,6 +114,7 @@ void addCloth(Node_t* head) {
 
 	addNode(head, newCloth);
 }
+//에러처리!!
 
 int compare(Node_t* target, const char* word) {
 
@@ -208,17 +209,28 @@ void MENU() {
 	printf("메뉴를 선택하세요: ");
 }
 
-void modify(Node_t* targetNode) {
-	//delete
-	//printf("수정정보를 입력하세요");
-	//addCloth();
+void modify(Node_t* targetNode, Node_t* prevNode) {
+	char option;
+	if (targetNode == NULL) return;
+	printNode(targetNode, targetNode);
+	printf("수정하시겠습니까? (Y/N) : ");
+	scanf(" %c", &option);
+	if (option == 'Y') {
+		//선정리
+		prevNode->next = targetNode->next;
+
+		//메모리 해제(운영체제에게 반납)
+		//free(deleteCloth);
+		free(targetNode);
+		printf("수정정보를 입력하세요\n");
+		addCloth(prevNode);
+	}
 }
 
 int main() {
 	Node_t head;
 	head.next = NULL;
 	int option;
-	char name[] = "원피스";
 
 	getText(&head, addNode);
 	while (1) {
@@ -229,7 +241,7 @@ int main() {
 			case 2: printList(&head, printNode); break;
 			case 3: search(&head, deleteNode); break;
 			case 4: search(&head, printNode); break;
-			case 5: 
+			case 5: search(&head, modify); break;
 			case 9: saveText(&head); return 0;
 		}
 		clearBuffer();
