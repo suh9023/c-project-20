@@ -45,11 +45,11 @@ void addCloth(Node_t* head) {
 	Cloth_t newCloth = { 0 };
 	
 	printf("옷의 이름: ");
-	scanf("%s", newCloth.name);
+	scanf(" %[^\n]s", newCloth.name);
 	printf("어떤 계절 옷인가요?\n(0.spring, 1.summer, 2.fall, 3.winter): ");
 	scanf("%d", &newCloth.season);
 	printf("옷의 색: ");
-	scanf("%s", newCloth.color);
+	scanf(" %[^\n]s", newCloth.color);
 	printf("옷의 사이즈: ");
 	scanf("%d", &newCloth.size);
 	printf("옷의 유형\n(0.shirts, 1.pants, 2.dress, 3.outer, 4.pajama): ");
@@ -81,7 +81,7 @@ void search(Node_t* head, void (*func)(Node_t*, Node_t*)) {
 	char word[20] = { 0 };
 
 	printf("검색어를 입력하세요: ");
-	scanf("%s", word);
+	scanf(" %[^\n]s", word);
 
 	while (curNode != NULL) {
 		if (compare(curNode, word) > 0) func(curNode,head);
@@ -219,6 +219,7 @@ void MENU() {
 	printf("3. 옷 버리기\n");
 	printf("4. 옷 검색하기\n");
 	printf("5. 정보 수정하기\n");
+	printf("6. 외출복 추천\n");
 	printf("9. 저장 후 종료\n");
 	printf("================\n");
 	printf("메뉴를 선택하세요: ");
