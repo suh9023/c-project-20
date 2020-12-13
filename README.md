@@ -12,6 +12,7 @@ make
 ./main
 
 ## 기능 구현
+
 1.옷 추가, 삭제
     - 옷의 이름, 색, 사이즈, type(shirts, pants, dress, outer, pajamas), 옷을 입을 계절을 입력
     - 삭제하고 싶은 옷의 정보로 옷을 찾고 삭제
