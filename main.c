@@ -15,7 +15,7 @@ typedef struct {
 	int size;
 	Type_e type;
 }Cloth_t;
-//옷의 사이즈 공용체 필드 SML/int???????????
+//사이즈 공용체 필드 SML/int?
 typedef struct node {
 	Cloth_t cloth;
 	struct node* next;
@@ -69,20 +69,34 @@ void addNode(Node_t* head, Cloth_t cloth) {
 		exit(1);
 	}
 
+	/*
 	//find last node
 	Node_t* last = head;
 	int i = 0;
 	while (last->next != NULL) {
 		last = last->next;
 	}
-
+	
 	//선정리
 	last->next = newNode;
 
 	newNode->cloth = cloth;
 	newNode->next = NULL;
+	*/
+	newNode->cloth = cloth;
+	Node_t* nextNode = head->next;
+	Node_t* prevNode = head;
+	//노드 삽입 위치 검색
+	while (nextNode != NULL) {
+		if (nextNode->cloth.season > newNode->cloth.season)
+			break;
+		prevNode = nextNode;
+		nextNode = nextNode->next;
+	}
+	//노드 삽입
+	prevNode->next = newNode;
+	newNode->next = nextNode;
 }
-//계절별 정렬 추가 구현
 
 void addCloth(Node_t* head) {
 	Cloth_t newCloth = { 0 };
@@ -165,18 +179,19 @@ void deleteNode(Node_t* targetNode, Node_t* prevNode) {
 	}
 	*/
 	char option;
+	if (targetNode == NULL) return;
 	printNode(targetNode, targetNode);
 	printf("삭제하시겠습니까? (Y/N) : ");
-	scanf("%c", &option);
-	if (option == 'N') return;
-	if (targetNode == NULL) return;
+	scanf(" %c", &option);
+	
+	if (option == 'Y') {
+		//선정리
+		prevNode->next = targetNode->next;
 
-	//선정리
-	prevNode->next = targetNode->next;
-
-	//메모리 해제(운영체제에게 반납)
-	//free(deleteCloth);
-	free(targetNode);
+		//메모리 해제(운영체제에게 반납)
+		//free(deleteCloth);
+		free(targetNode);
+	}
 }
 
 void MENU() {
@@ -187,9 +202,16 @@ void MENU() {
 	printf("2. 옷 전체 출력하기\n");
 	printf("3. 옷 버리기\n");
 	printf("4. 옷 검색하기\n");
+	printf("5. 정보 수정하기\n");
 	printf("9. 저장 후 종료\n");
 	printf("================\n");
 	printf("메뉴를 선택하세요: ");
+}
+
+void modify(Node_t* targetNode) {
+	//delete
+	//printf("수정정보를 입력하세요");
+	//addCloth();
 }
 
 int main() {
