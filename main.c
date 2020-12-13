@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include<time.h>
+#include <time.h>
 
 char* Type_name[] = { "shirts", "pants", "dress", "outer", "pajama" };
 char* Season_name[] = {"spring", "summer", "fall", "winter" };
