@@ -31,10 +31,8 @@ void getText(Node_t* head, void (*add)(Node_t*,Cloth_t)) {
 
 	while (!feof(fp)) {
 		fscanf(fp, "%s %d %s %d %d\n", getCloth.name, &getCloth.season, getCloth.color, &getCloth.size, &getCloth.type);
-		//연청바지 1 skyblue 27 2 //name season color size type
 		if (strcmp(getCloth.name,"")==0) break;
 		add(head, getCloth);
-		//printf("%s %d %s %d %d\n", getCloth.name, getCloth.season, getCloth.color, getCloth.size, getCloth.type);
 	}
 	fclose(fp);
 }
@@ -51,7 +49,6 @@ void saveText(Node_t* head) {
 	while (cur != NULL) {
 		saveCloth = &cur->cloth;
 		fprintf(fp, "%s %d %s %d %d\n", saveCloth->name, saveCloth->season, saveCloth->color, saveCloth->size, saveCloth->type);
-		//연청바지 1 skyblue 27 2 //name season color size type
 		cur = cur->next;
 	}
 	fclose(fp);
@@ -69,20 +66,6 @@ void addNode(Node_t* head, Cloth_t cloth) {
 		exit(1);
 	}
 
-	/*
-	//find last node
-	Node_t* last = head;
-	int i = 0;
-	while (last->next != NULL) {
-		last = last->next;
-	}
-	
-	//선정리
-	last->next = newNode;
-
-	newNode->cloth = cloth;
-	newNode->next = NULL;
-	*/
 	newNode->cloth = cloth;
 	Node_t* nextNode = head->next;
 	Node_t* prevNode = head;
@@ -167,18 +150,7 @@ void printList(const Node_t* head, void (*print)(Node_t*, Node_t*)) {
 }
 
 void deleteNode(Node_t* targetNode, Node_t* head) {
-	/*
-	Node_t* target = head->next;
-	Node_t* prev = head;
-	while (target != NULL){
-		if (strcmp(target->cloth.name, name) == 0) break;
-		else {
-			Cloth_t* deleteCloth = &target->cloth;
-			prev = target;
-			target = target->next;
-		}
-	}
-	*/
+
 	char option;
 	Node_t* prevNode = head;
 	if (targetNode == NULL) return;
@@ -193,8 +165,7 @@ void deleteNode(Node_t* targetNode, Node_t* head) {
 		//선정리
 		prevNode->next = targetNode->next;
 
-		//메모리 해제(운영체제에게 반납)
-		//free(deleteCloth);
+		//메모리 해제
 		free(targetNode);
 	}
 }
@@ -220,15 +191,14 @@ void modify(Node_t* targetNode, Node_t* head) {
 	while (prevNode->next != targetNode) {
 		prevNode = prevNode->next;
 	}
-	printNode(targetNode, targetNode);
+	printNode(targetNode, head);
 	printf("수정하시겠습니까? (Y/N) : ");
 	scanf(" %c", &option);
 	if (option == 'Y') {
 		//선정리
 		prevNode->next = targetNode->next;
 
-		//메모리 해제(운영체제에게 반납)
-		//free(deleteCloth);
+		//메모리 해제
 		free(targetNode);
 		printf("수정정보를 입력하세요\n");
 		addCloth(head);
