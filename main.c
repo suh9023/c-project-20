@@ -3,17 +3,15 @@
 #include <string.h>
 #include<time.h>
 
-typedef enum { SHIRTS, PANTS, DRESS, OUTER, PAJAMA }Type_e;
 char* Type_name[] = { "shirts", "pants", "dress", "outer", "pajama" };
-typedef enum {SPRING, SUMMER, FALL, WINTER }Season_e;
 char* Season_name[] = {"spring", "summer", "fall", "winter" };
 
 typedef struct {
 	char name[20];
-	Season_e season;
+	int season;
 	char color[10];
 	int size;
-	Type_e type;
+	int type;
 }Cloth_t;
 //사이즈 공용체 필드 SML/int?
 typedef struct node {
@@ -221,7 +219,6 @@ void MENU() {
 	printf("3. 옷 버리기\n");
 	printf("4. 옷 검색하기\n");
 	printf("5. 정보 수정하기\n");
-	printf("6. 외출복 추천\n");
 	printf("9. 저장 후 종료\n");
 	printf("================\n");
 	printf("메뉴를 선택하세요: ");
