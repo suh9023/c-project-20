@@ -234,7 +234,7 @@ void getText(Node_t* head, void (*add)(Node_t*,Cloth_t)) {
 	}
 
 	while (!feof(fp)) {
-		fscanf(fp, "%[^\n]s %d %[^\n]s %d %d\n", getCloth.name, &getCloth.season, getCloth.color, &getCloth.size, &getCloth.type);
+		fscanf(fp, "%s %d %s %d %d\n", getCloth.name, &getCloth.season, getCloth.color, &getCloth.size, &getCloth.type);
 		if (strcmp(getCloth.name,"")==0) break;
 		add(head, getCloth);
 	}
