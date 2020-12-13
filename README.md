@@ -9,3 +9,8 @@
 5. 옷 수정
 6. 현재 계절에 맞는 옷 추천
 7. 저장된 텍스트 파일 읽어오기/ 저장하기
+##
+git clone https://github.com/suh9023/c_project_20 
+cd c_project_20
+make
+./main
