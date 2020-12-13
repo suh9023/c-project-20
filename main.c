@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include<time.h>
 
 typedef enum { SHIRTS, PANTS, DRESS, OUTER, PAJAMA }Type_e;
 char* Type_name[] = { "shirts", "pants", "dress", "outer", "pajama" };
 typedef enum {SPRING, SUMMER, FALL, WINTER }Season_e;
 char* Season_name[] = {"spring", "summer", "fall", "winter" };
-
 
 typedef struct {
 	char name[20];
@@ -20,44 +20,6 @@ typedef struct node {
 	Cloth_t cloth;
 	struct node* next;
 }Node_t;
-
-void getText(Node_t* head, void (*add)(Node_t*,Cloth_t)) {
-	Cloth_t getCloth = { 0 };
-	FILE* fp;
-	if ((fp = fopen("closet.txt", "a+")) == NULL) {
-		fprintf(stderr, "closet.txt 파일을 열 수 없습니다.");
-		exit(1);
-	}
-
-	while (!feof(fp)) {
-		fscanf(fp, "%s %d %s %d %d\n", getCloth.name, &getCloth.season, getCloth.color, &getCloth.size, &getCloth.type);
-		if (strcmp(getCloth.name,"")==0) break;
-		add(head, getCloth);
-	}
-	fclose(fp);
-}
-
-void saveText(Node_t* head) {
-	Cloth_t* saveCloth = NULL;
-	Node_t* cur = head->next;
-	FILE* fp;
-	if ((fp = fopen("closet.txt", "w")) == NULL) {
-		fprintf(stderr, "closet.txt 파일을 열 수 없습니다.");
-		exit(1);
-	}
-
-	while (cur != NULL) {
-		saveCloth = &cur->cloth;
-		fprintf(fp, "%s %d %s %d %d\n", saveCloth->name, saveCloth->season, saveCloth->color, saveCloth->size, saveCloth->type);
-		cur = cur->next;
-	}
-	fclose(fp);
-}
-
-void clearBuffer()
-{
-	while (getchar() != '\n');
-}
 
 void addNode(Node_t* head, Cloth_t cloth) {
 	Node_t* newNode = (Node_t*)malloc(sizeof(Node_t));
@@ -170,20 +132,6 @@ void deleteNode(Node_t* targetNode, Node_t* head) {
 	}
 }
 
-void MENU() {
-	Node_t head;
-	head.next = NULL;
-	printf("======메뉴======\n");
-	printf("1. 옷 추가하기\n");
-	printf("2. 옷 전체 출력하기\n");
-	printf("3. 옷 버리기\n");
-	printf("4. 옷 검색하기\n");
-	printf("5. 정보 수정하기\n");
-	printf("9. 저장 후 종료\n");
-	printf("================\n");
-	printf("메뉴를 선택하세요: ");
-}
-
 void modify(Node_t* targetNode, Node_t* head) {
 	char option;
 	if (targetNode == NULL) return;
@@ -205,6 +153,118 @@ void modify(Node_t* targetNode, Node_t* head) {
 	}
 }
 
+void recommend(Node_t* head, void(*print)(Node_t*, Node_t*)) {
+	int seasonOption = 0;
+	if (head->next == NULL) return;
+
+	printf("지금 계절을 입력하세요 (0.spring 1.summer 2.fall 3.winter) : ");
+	scanf("%d", &seasonOption);
+
+	//특정 계절 연결 노드 개수 확인 (shirts pants dress outer)
+	Node_t* cur = head->next;
+	int Scnt= 0;
+	int Pcnt = 0;
+	int Dcnt = 0;
+	int Ocnt = 0;
+
+	while (cur != NULL) {
+		if (cur->cloth.season == seasonOption) {
+			if (cur->cloth.type == 0) Scnt++;
+			else if (cur->cloth.type == 1) Pcnt++;
+			else if (cur->cloth.type == 2) Dcnt++;
+			else if (cur->cloth.type == 3) Ocnt++;
+		}
+		cur = cur->next;
+	}
+
+	srand((unsigned int)time(NULL));
+	int Sran, Pran, Dran, Oran;
+	Sran = Pran = Dran = Oran = 0;
+	if(Scnt>0) Sran = rand() % Scnt;
+	if(Pcnt>0) Pran = rand() % Pcnt;
+	if(Dcnt>0) Dran = rand() % Dcnt;
+	if(Ocnt>0) Oran = rand() % Ocnt;
+
+	//옷 추천 //(dress, outer)(shirts, pants, outer)(shirts, pants)
+	printf("-----추천 복장------\n");
+	cur = head->next;
+	Scnt = Pcnt = Dcnt = Ocnt = 0;
+	while (cur!=NULL&&(cur->cloth.season<=seasonOption)) {
+		if (cur->cloth.season == seasonOption) {
+			if (cur->cloth.type == 0) {
+				if (Scnt == Sran) print(cur, head);
+				Scnt++;
+			}
+			if (cur->cloth.type == 1) {
+				if (Pcnt == Pran) print(cur, head);
+				Pcnt++;
+			}
+			if (cur->cloth.type == 2) {
+				if (Dcnt == Dran) print(cur, head);
+				Dcnt++;
+			}
+			if (cur->cloth.type == 3) {
+				if (Ocnt == Oran) print(cur, head);
+				Ocnt++;
+			}
+		}
+		cur = cur->next;
+	}
+}
+
+void MENU() {
+	Node_t head;
+	head.next = NULL;
+	printf("======메뉴======\n");
+	printf("1. 옷 추가하기\n");
+	printf("2. 옷 전체 출력하기\n");
+	printf("3. 옷 버리기\n");
+	printf("4. 옷 검색하기\n");
+	printf("5. 정보 수정하기\n");
+	printf("6. 외출복 추천\n");
+	printf("9. 저장 후 종료\n");
+	printf("================\n");
+	printf("메뉴를 선택하세요: ");
+}
+
+void getText(Node_t* head, void (*add)(Node_t*,Cloth_t)) {
+	Cloth_t getCloth = { 0 };
+	FILE* fp;
+	if ((fp = fopen("closet.txt", "a+")) == NULL) {
+		fprintf(stderr, "closet.txt 파일을 열 수 없습니다.");
+		exit(1);
+	}
+
+	while (!feof(fp)) {
+		fscanf(fp, "%s %d %s %d %d\n", getCloth.name, &getCloth.season, getCloth.color, &getCloth.size, &getCloth.type);
+		if (strcmp(getCloth.name,"")==0) break;
+		add(head, getCloth);
+	}
+	fclose(fp);
+}
+
+void saveText(Node_t* head) {
+	Cloth_t* saveCloth = NULL;
+	Node_t* cur = head->next;
+	FILE* fp;
+	if ((fp = fopen("closet.txt", "w")) == NULL) {
+		fprintf(stderr, "closet.txt 파일을 열 수 없습니다.");
+		exit(1);
+	}
+
+	while (cur != NULL) {
+		saveCloth = &cur->cloth;
+		fprintf(fp, "%s %d %s %d %d\n", saveCloth->name, saveCloth->season, saveCloth->color, saveCloth->size, saveCloth->type);
+		cur = cur->next;
+	}
+	fclose(fp);
+}
+
+void clearBuffer()
+{
+	while (getchar() != '\n');
+}
+
 int main() {
 	Node_t head;
 	head.next = NULL;
@@ -215,13 +275,15 @@ int main() {
 		MENU();
 		scanf("%d", &option);
 		switch (option) {
-			case 1: addCloth(&head); break;
-			case 2: printList(&head, printNode); break;
-			case 3: search(&head, deleteNode); break;
-			case 4: search(&head, printNode); break;
-			case 5: search(&head, modify); break;
-			case 9: saveText(&head); return 0;
+		case 1: addCloth(&head); break;
+		case 2: printList(&head, printNode); break;
+		case 3: search(&head, deleteNode); break;
+		case 4: search(&head, printNode); break;
+		case 5: search(&head, modify); break;
+		case 6: recommend(&head, printNode); break;
+		case 9: saveText(&head); return 0;
 		}
 		clearBuffer();
 	}
 }
+
