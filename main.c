@@ -141,13 +141,13 @@ void search(Node_t* head, void (*func)(Node_t*, Node_t*)) {
 	scanf("%s", word);
 
 	while (curNode != NULL) {
-		if (compare(curNode, word) > 0) func(curNode,prevNode);
+		if (compare(curNode, word) > 0) func(curNode,head);
 		prevNode = curNode;
 		curNode = curNode->next;
 	}
 }
 
-void printNode(Node_t* curNode, Node_t* prevNode) {
+void printNode(Node_t* curNode, Node_t* head) {
 	printf("-----------------\n");
 	printf("cloth name : %s\n", curNode->cloth.name);
 	printf("cloth season : %s\n", Season_name[curNode->cloth.season]);
@@ -166,7 +166,7 @@ void printList(const Node_t* head, void (*print)(Node_t*, Node_t*)) {
 	}
 }
 
-void deleteNode(Node_t* targetNode, Node_t* prevNode) {
+void deleteNode(Node_t* targetNode, Node_t* head) {
 	/*
 	Node_t* target = head->next;
 	Node_t* prev = head;
@@ -180,8 +180,12 @@ void deleteNode(Node_t* targetNode, Node_t* prevNode) {
 	}
 	*/
 	char option;
+	Node_t* prevNode = head;
 	if (targetNode == NULL) return;
-	printNode(targetNode, targetNode);
+	while (prevNode->next != targetNode) {
+		prevNode = prevNode->next;
+	}
+	printNode(targetNode, head);
 	printf("삭제하시겠습니까? (Y/N) : ");
 	scanf(" %c", &option);
 	
@@ -209,9 +213,13 @@ void MENU() {
 	printf("메뉴를 선택하세요: ");
 }
 
-void modify(Node_t* targetNode, Node_t* prevNode) {
+void modify(Node_t* targetNode, Node_t* head) {
 	char option;
 	if (targetNode == NULL) return;
+	Node_t* prevNode = head;
+	while (prevNode->next != targetNode) {
+		prevNode = prevNode->next;
+	}
 	printNode(targetNode, targetNode);
 	printf("수정하시겠습니까? (Y/N) : ");
 	scanf(" %c", &option);
@@ -223,7 +231,7 @@ void modify(Node_t* targetNode, Node_t* prevNode) {
 		//free(deleteCloth);
 		free(targetNode);
 		printf("수정정보를 입력하세요\n");
-		addCloth(prevNode);
+		addCloth(head);
 	}
 }
 
